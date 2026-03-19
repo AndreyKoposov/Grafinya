@@ -25,12 +25,13 @@ def welcome(request: Request):
     return templates.TemplateResponse('welcome.html', context=context)
 
 @router.post('/login')
-async def login(response: Response,
+async def login(#response: Response,
                 request: LoginRequest,
                 service: AuthService = Depends(get_auth_service)):
 
+    print(request)
     result, is_new = await service.login_or_register(request)
-    response.set_cookie(key='test_cookie', value="test_value")
+    # response.set_cookie(key='test_cookie', value="test_value")
 
     return {
         'success': result.success,
