@@ -11,8 +11,7 @@ def welcome(request: Request):
         'request': request,
         'app_name': 'Grafinya',
         'app_header': 'Онтологический анализ процессов',
-        'welcome_msg': 'Добро пожаловать! Представьтесь, пожалуйста'
-
+        'welcome_msg': 'Добро пожаловать! Представьтесь, пожалуйста',
     }
     return templates.TemplateResponse('welcome.html', context=context)
 
