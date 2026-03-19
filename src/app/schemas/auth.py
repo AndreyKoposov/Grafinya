@@ -8,8 +8,8 @@ class LoginRequest(BaseModel):
     orioks_id: Optional[str] = Field(None)
 
 class LoginResponse(BaseModel):
-    success: bool
-    error: Optional[str] = None
+    success: bool = Field(...)
+    error: Optional[str] = Field(None)
 
 class SessionResponse(BaseModel):
     user_id: str
