@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация • Онтологический анализ</title>
+    <link rel="stylesheet" href="/static/css/register.css">
+</head>
+<body>
+    <!-- Фоновое изображение (замените путь на своё) -->
+    <div class="background">
+        <!-- ВСТАВЬТЕ СЮДА ПУТЬ К ВАШЕМУ ИЗОБРАЖЕНИЮ -->
+        <!-- <img src="" alt="Background"> -->
+    </div>
+
+    <!-- Центральное окно регистрации -->
+    <div class="register-card">
+        <!-- Иконка приложения -->
+        <div class="app-icon">🔬</div>
+        
+        <!-- Название приложения -->
+        <h1 class="app-title">{{ app_name }}</h1>
+        <h2 class="app-title">{{ app_header }}</h2>
+        
+        <!-- Приветственное сообщение -->
+        <p class="welcome-message">{{ welcome_msg }}</p>
+        
+        <!-- Поле ввода имени -->
+        <input type="text" class="name-input" id="userName" placeholder="Ваше имя" autofocus>
+        
+        <!-- Кнопка регистрации -->
+        <button class="register-btn" id="registerBtn">Войти</button>
+    </div>
+
+    <script src="/static/js/register.js"></script>
+</body>
+</html>
