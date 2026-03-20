@@ -1,17 +1,14 @@
 from src.app.repositories.user import UserRepo
-from src.app.schemas.auth import LoginRequest, LoginResponse
 
 
 class AuthService():
     def __init__(self, repo: UserRepo):
         self.repo = repo
 
-    async def login_or_register(self, user_data: LoginRequest) -> tuple[LoginResponse, bool]:
-        existing_user = await self.repo.get_by_name(user_data.name)
-
+    async def login_or_register(self, orioks_id: str) -> bool:
+        existing_user = await self.repo.get_by_orioks(orioks_id)
         if existing_user:
-            return LoginResponse(success=True, error=""), False
+            return True
 
-        await self.repo.create(user_data)
-
-        return LoginResponse(success=True, error=""), True
+        await self.repo.create(orioks_id)
+        return True

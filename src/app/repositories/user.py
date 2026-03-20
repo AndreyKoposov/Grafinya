@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, insert
 
 from src.app.models.user import User
-from src.app.schemas.auth import LoginRequest
 
 
 class UserRepo():
@@ -17,20 +16,14 @@ class UserRepo():
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_by_name(self, name: str) -> Optional[User]:
-        query = select(User).where(User.name == name)
-        result = await self.session.execute(query)
-        return result.scalar_one_or_none()
-
     async def get_by_orioks(self, orioks_id: str) -> Optional[User]:
         query = select(User).where(User.orioks_id == orioks_id)
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def create(self, user_data: LoginRequest):
+    async def create(self, orioks_id: str):
         query = insert(User).values(
-            name=user_data.name,
-            orioks_id=user_data.orioks_id
+            orioks_id=orioks_id
         )
         await self.session.execute(query)
 

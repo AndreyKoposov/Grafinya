@@ -1,14 +1,15 @@
+import re
+from urllib.parse import unquote
 from fastapi import APIRouter, Request, Response, Depends
-from fastapi.templating import Jinja2Templates
 
+from src.app.config import TEMPLATES
 from src.app.db.engine import get_session
 from src.app.repositories.user import UserRepo
 from src.app.services.auth import AuthService
-from src.app.schemas.auth import LoginRequest
 
 
 router = APIRouter()
-templates = Jinja2Templates(directory='src/static/templates')
+
 
 async def get_auth_service(session=Depends(get_session)) -> AuthService:
     user_repo = UserRepo(session)
@@ -22,20 +23,34 @@ def welcome(request: Request):
         'app_header': 'Онтологический анализ процессов',
         'welcome_msg': 'Добро пожаловать! Представьтесь, пожалуйста',
     }
-    return templates.TemplateResponse('welcome.html', context=context)
+    return TEMPLATES.TemplateResponse('welcome.html', context=context)
 
 @router.post('/login')
-async def login(response: Response,
-                request: LoginRequest,
+async def login(request: Request,
+                response: Response,
                 auth: AuthService = Depends(get_auth_service, scope='function')):
 
-    result, is_new = await auth.login_or_register(request)
-    response.set_cookie(key='test_cookie', value="test_value")
+    orioks_identity = request.cookies.get('orioks_identity')
+    if orioks_identity is None:
+        return {
+            'success': False,
+            'error': 'Need orioks auth'
+        }
+
+    orioks_id = extract_orioks_id(orioks_identity)
+    if not orioks_id:
+        return {
+            'success': False,
+            'error': 'Cant parse orioks_id'
+        }
+
+    success = await auth.login_or_register(orioks_id)
+    if success:
+        response.set_cookie(key='grafinya_session', value="true")
 
     return {
-        'success': result.success,
-        'error': result.error,
-        'is_new': is_new
+        'success': success,
+        'error': ""
     }
 
 @router.post('/logout')
@@ -45,3 +60,10 @@ def logout():
 @router.get('/me')
 def me():
     pass
+
+
+def extract_orioks_id(cookie_value):
+    match = re.search(r'\[(\d+),', unquote(cookie_value))
+    if match:
+        return match.group(1)
+    return None
