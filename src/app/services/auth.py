@@ -3,16 +3,15 @@ from src.app.schemas.auth import LoginRequest, LoginResponse
 
 
 class AuthService():
-    def __init__(self, repo: UserRepo) -> None:
+    def __init__(self, repo: UserRepo):
         self.repo = repo
 
     async def login_or_register(self, user_data: LoginRequest) -> tuple[LoginResponse, bool]:
         existing_user = await self.repo.get_by_name(user_data.name)
 
         if existing_user:
-            return (LoginResponse(success=True, error=""), False)
+            return LoginResponse(success=True, error=""), False
 
         await self.repo.create(user_data)
-        await self.repo.session.commit()
 
         return LoginResponse(success=True, error=""), True

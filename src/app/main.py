@@ -17,7 +17,3 @@ app.include_router(
 @app.get('/')
 def home():
     return RedirectResponse('/api/auth/')
-
-@app.get('/dashboard')
-def dashboard():
-    return {'msg': 'Dashboard'}

@@ -2,7 +2,7 @@ from uuid import UUID
 from typing import Optional
 from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update
+from sqlalchemy import select, update, insert
 
 from src.app.models.user import User
 from src.app.schemas.auth import LoginRequest
@@ -27,14 +27,12 @@ class UserRepo():
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def create(self, user_data: LoginRequest) -> User:
-        user = User(
+    async def create(self, user_data: LoginRequest):
+        query = insert(User).values(
             name=user_data.name,
             orioks_id=user_data.orioks_id
         )
-        self.session.add(user)
-        await self.session.flush()
-        return user
+        await self.session.execute(query)
 
     async def update_last_login(self, user_id: UUID):
         query = update(User).where(User.id == user_id).values(last_login=datetime.now(timezone.utc))

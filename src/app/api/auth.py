@@ -27,10 +27,9 @@ def welcome(request: Request):
 @router.post('/login')
 async def login(response: Response,
                 request: LoginRequest,
-                service: AuthService = Depends(get_auth_service)):
+                auth: AuthService = Depends(get_auth_service, scope='function')):
 
-    print(request)
-    result, is_new = await service.login_or_register(request)
+    result, is_new = await auth.login_or_register(request)
     response.set_cookie(key='test_cookie', value="test_value")
 
     return {
