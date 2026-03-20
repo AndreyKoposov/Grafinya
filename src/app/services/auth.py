@@ -12,4 +12,7 @@ class AuthService():
         if existing_user:
             return (LoginResponse(success=True, error=""), False)
 
-        return await self.repo.create(user_data), True
+        await self.repo.create(user_data)
+        await self.repo.session.commit()
+
+        return LoginResponse(success=True, error=""), True

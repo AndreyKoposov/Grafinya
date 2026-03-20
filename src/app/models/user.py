@@ -2,7 +2,8 @@ from uuid import uuid4
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.dialects.postgresql import UUID
-from .base import base
+
+from src.app.db.engine import base
 
 
 class User(base):
@@ -12,7 +13,7 @@ class User(base):
     name = Column(String(20), unique=True, nullable=False, index=True)
     orioks_id = Column(String(10), unique=True, nullable=True, index=True)
     last_login = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     def __repr__(self):
-        return f"<{self.__tablename__} #{self.id}>"
+        return f"<User {self.name}>"
