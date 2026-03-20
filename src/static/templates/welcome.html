@@ -3,33 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход • Онтологический анализ</title>
-    <link rel="stylesheet" href="/static/css/register.css">
+    <title>Загрузка - Grafinya</title>
+    <link rel="stylesheet" href="/static/css/welcome.css">
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
-<body>
-    <!-- Фоновое изображение (замените путь на своё) -->
-    <div class="background">
-        <!-- ВСТАВЬТЕ СЮДА ПУТЬ К ВАШЕМУ ИЗОБРАЖЕНИЮ -->
-        <!-- <img src="" alt="Background"> -->
-    </div>
+    <body>
+        <div class="loading-container">
+            <div class="icon-container" id="iconContainer">
+                <div class="spinner" id="spinner"></div>
+            </div>
+            <div class="loading-text" id="loadingText">Аутентификация...</div>
+            <div id="retryButton" style="display: none;">
+                <button class="retry-btn" onclick="location.reload()">Повторить</button>
+            </div>
+        </div>
 
-    <!-- Центральное окно регистрации -->
-    <div class="register-card">
-        <!-- Иконка приложения -->
-        <div class="app-icon">🔬</div>
-        
-        <!-- Название приложения -->
-        <h1 class="app-title">{{ app_name }}</h1>
-        <h2 class="app-title">{{ app_header }}</h2>
-        
-        <!-- Приветственное сообщение -->
-        <p class="welcome-message">{{ welcome_msg }}</p>
-        
-        <!-- Кнопка регистрации -->
-        <button class="register-btn" id="registerBtn">Войти</button>
-    </div>
-
-    <script src="/static/js/register.js"></script>
-</body>
+        <script type="text/javascript" src="/static/js/welcome.js"></script>
+    </body>
 </html>
