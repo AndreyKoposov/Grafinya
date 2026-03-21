@@ -306,16 +306,16 @@ function initGUI() {
             }
         } else {
             // Создание нового
-            await fetch("/processes/create", {
+            await fetch("/api/processes/create", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ pr_name: name }),
+                body: JSON.stringify({ name: name }),
             })
             .catch(error => console.error(error));
-            //await eel.create_process(name)();
-            await fetch_processes()
+
+            //await fetch_processes()
         }
 
         renderProcesses();
