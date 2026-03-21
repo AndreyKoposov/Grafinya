@@ -182,6 +182,17 @@ body {
     color: #6a7f9f;
 }
 
+.hide-sidebar-btn {
+    border: none;
+    width: 1.5%;
+}
+
+.hide-sidebar-btn:hover {
+    border: none;
+    background: #d4e2f0;
+    width: 1.5%;
+}
+
 /* Правый основной блок */
 .main-panel {
     flex: 1;

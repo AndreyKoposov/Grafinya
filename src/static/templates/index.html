@@ -9,10 +9,14 @@
 </head>
 <body>
     <div class="app">
+        <!-- Кнопка скрытия левой панели-->
+        <button class="hide-sidebar-btn" id="hide-leftbar-btn">
+            <span>◀</span>
+        </button>
         <!-- Левая колонка: список процессов в стиле чатов -->
         <div id="process-list" class="process-list">
            <div class="process-list-header">
-               <span>📋 Процессы</span>
+               <span id="processCount">📋 Процессы (3)</span>
                <button class="add-process-btn" id="addProcessBtn" title="Добавить новый процесс">+</button>
            </div>
            <div class="process-items" id="processItems">
@@ -21,26 +25,24 @@
            <!-- Индикатор состояния соединения -->
             <div class="connection-status process-footer" id="connectionStatus">
                 <div class="status-indicator" id="statusIndicator"></div>
-                <span class="status-text" id="statusText">Соединение установлено</span>
+                <span class="status-text" id="loginText">8213531</span>
             </div>
         </div>
         <!-- Центральная колонка: кнопки + контент -->
         <div class="main-panel">
-            <!-- Шесть кнопок -->
+            <!-- Кнопки основного меню-->
             <div class="button-bar">
-                <button class="tab-btn" id="btn2">RDF/XML</button>
-                <button class="tab-btn" id="btn3">Структура</button>
-                <button class="tab-btn" id="btn4">Базовая модель</button>
-                <button class="tab-btn" id="btn5">Граф</button>
-                <button class="tab-btn" id="btn6">Бифуркации</button>
+                <button class="tab-btn" id="btn1">Структура</button>
+                <button class="tab-btn" id="btn2">Анализ</button>
+                <button class="tab-btn" id="btn3">Онтология</button>
+                <button class="tab-btn" id="btn4">Предиктивная модель</button>
             </div>
-            <!-- Шесть кнопок -->
+            <!-- Кнопки под-меню -->
             <div class="button-bar">
-                <button class="tab-btn" id="btn2">RDF/XML</button>
-                <button class="tab-btn" id="btn3">Структура</button>
-                <button class="tab-btn" id="btn4">Базовая модель</button>
-                <button class="tab-btn" id="btn5">Граф</button>
-                <button class="tab-btn" id="btn6">Бифуркации</button>
+                <button class="tab-btn">Сущности</button>
+                <button class="tab-btn">Параметры</button>
+                <button class="tab-btn">Этапы</button>
+                <button class="tab-btn">Переходы</button>
             </div>
 
             <!-- Динамический контент -->
@@ -63,6 +65,10 @@
                 <span class="status-text" id="statusText">Соединение установлено</span>
             </div>
         </div>
+        <!-- Кнопка скрытия правой панели-->
+        <button class="hide-sidebar-btn" id="hide-rightbar-btn">
+            <span>▶</span>
+        </button>
     </div>
 
     <script src="/static/js/main.js"></script>

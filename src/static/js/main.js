@@ -2,23 +2,45 @@ window.onload = function() {
     initGUI();
 }
 
-
 async function initGUI() {
+    // DOM элементы
+    const processItems = document.getElementById('processItems');
+    const processCount = document.getElementById('processCount');
+    const addProcessBtn = document.getElementById('addProcessBtn');
+
     // Элементы интерфейса
     const btn1 = document.getElementById('btn1');
     const btn2 = document.getElementById('btn2');
     const btn3 = document.getElementById('btn3');
     const btn4 = document.getElementById('btn4');
-    const btn5 = document.getElementById('btn5');
-    const btn6 = document.getElementById('btn6');
+
+    // Массив всех кнопок для управления active-классом
+    const allBtns = [btn1, btn2, btn3, btn4];
 
     // Область оснвного контента
     const contentArea = document.getElementById('contentArea');
-    const leftColumn = document.getElementById("process-list")
-    // leftColumn.style.display = "none";
 
-    // Массив всех кнопок для управления active-классом
-    const allBtns = [btn1, btn2, btn3, btn4, btn5, btn6];
+    // Боковые панели и их кнопки
+    const leftBar = document.getElementById("process-list")
+    const rightBar = document.getElementById("ai-chat")
+    const leftBtn = document.getElementById("hide-leftbar-btn")
+    const rightBtn = document.getElementById("hide-rightbar-btn")
+
+    // Обработчики сокрытия/октрытия боковых панелей
+    leftBtn.addEventListener('click', function(e) {
+        const closed = leftBar.style.display === "none";
+        leftBar.style.display = closed ? "flex" : "none";
+
+        const span = leftBtn.getElementsByTagName('span')[0]
+        span.innerHTML = closed ? "◀" : "▶";
+    });
+    rightBtn.addEventListener('click', function(e) {
+        const closed = rightBar.style.display === "none";
+        rightBar.style.display = closed ? "flex" : "none";
+
+        const span = rightBtn.getElementsByTagName('span')[0]
+        span.innerHTML = closed ? "▶" : "◀";
+    });
 
     // Функция сброса активного класса и установки нового
     function setActiveButton(activeBtn) {
@@ -36,8 +58,6 @@ async function initGUI() {
             contentArea.innerHTML = "";
         if (btnNumber == 4)
             contentArea.innerHTML = "";
-        if (btnNumber == 5 || btnNumber == 6)
-            contentArea.innerHTML = "";
     }
 
     // ========== УПРАВЛЕНИЕ ПРОЦЕССАМИ ==========
@@ -48,7 +68,6 @@ async function initGUI() {
         // Очистка списка процессов
         processes = []
         // Запрос процессов от python eel
-        //infos = await eel.fetch_processes()()
         infos = []
         await fetch("/processes")
             .then(response => response.json())  
@@ -66,15 +85,13 @@ async function initGUI() {
             processes.push({ id: pr_id, name: pr_name, avatar: pr_avatar, badge: pr_count + ' элемента', meta: pr_created, option: pr_option })
         }
     }
+
     // Функция обновления счетчика процессов
     function updateProcessCount() {
-        processCount.textContent = `${processes.length} активных`;
+        processCount.textContent = `📋 Процессы (${processes.length})`;
+        if (processes.length > 0)
+            processCount.textContent += `(${processes.length})`
     }
-
-    // DOM элементы
-    const processItems = document.getElementById('processItems');
-    const processCount = document.getElementById('processCount');
-    const addProcessBtn = document.getElementById('addProcessBtn');
 
     // Модальное окно
     const modalOverlay = document.createElement('div');
