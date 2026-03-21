@@ -2,19 +2,17 @@ window.onload = function() {
     initGUI();
 }
 
-async function initGUI() {
-    // DOM элементы
+function initGUI() {
+    // // ========== DOM ЭЛЕМЕНТЫ ==========
     const processItems = document.getElementById('processItems');
     const processCount = document.getElementById('processCount');
     const addProcessBtn = document.getElementById('addProcessBtn');
 
-    // Элементы интерфейса
+    // Основные кнопки
     const btn1 = document.getElementById('btn1');
     const btn2 = document.getElementById('btn2');
     const btn3 = document.getElementById('btn3');
     const btn4 = document.getElementById('btn4');
-
-    // Массив всех кнопок для управления active-классом
     const allBtns = [btn1, btn2, btn3, btn4];
 
     // Область оснвного контента
@@ -42,7 +40,7 @@ async function initGUI() {
         span.innerHTML = closed ? "▶" : "◀";
     });
 
-    // Функция сброса активного класса и установки нового
+    // Функция сброса активного класса кнопок и установки нового
     function setActiveButton(activeBtn) {
         allBtns.forEach(btn => btn.classList.remove('active'));
         activeBtn.classList.add('active');
@@ -60,40 +58,7 @@ async function initGUI() {
             contentArea.innerHTML = "";
     }
 
-    // ========== УПРАВЛЕНИЕ ПРОЦЕССАМИ ==========
-    let processes = []
-
-    // Получение процессов с сервера 
-    async function fetch_processes() {
-        // Очистка списка процессов
-        processes = []
-        // Запрос процессов от python eel
-        infos = []
-        await fetch("/processes")
-            .then(response => response.json())  
-            .then(data => infos = data.content)
-            .catch(error => console.error(error));
-        // Добавляем процессы в список
-        for (let i = 0; i < infos.length; i++) {
-            pr_id = infos[i]["id"]
-            pr_name = infos[i]["name"]
-            pr_avatar = infos[i]["avatar"]
-            pr_created = infos[i]["created"]
-            pr_option = infos[i]["option"]
-            pr_count = infos[i]["count"]
-
-            processes.push({ id: pr_id, name: pr_name, avatar: pr_avatar, badge: pr_count + ' элемента', meta: pr_created, option: pr_option })
-        }
-    }
-
-    // Функция обновления счетчика процессов
-    function updateProcessCount() {
-        processCount.textContent = `📋 Процессы (${processes.length})`;
-        if (processes.length > 0)
-            processCount.textContent += `(${processes.length})`
-    }
-
-    // Модальное окно
+    // ========== МОДАЛЬНОЕ ОКНО ==========
     const modalOverlay = document.createElement('div');
     modalOverlay.className = 'modal-overlay';
     modalOverlay.innerHTML = `
@@ -118,9 +83,99 @@ async function initGUI() {
     let currentEditId = null;
     let deleteMode = false;
 
-    // ID выбранного процесса (по умолчанию первый)
+    // Функция открытия модального окна для создания
+    function openCreateModal() {
+        currentEditId = null;
+        modalTitle.textContent = 'Новый процесс';
+        processNameInput.value = '';
+        modalOverlay.classList.add('active');
+        processNameInput.focus();
+    }
+    // Функция открытия модального окна для редактирования
+    function openEditModal(id) {
+        const process = processes.find(p => p.id === id);
+        if (process) {
+            currentEditId = id;
+            modalTitle.textContent = 'Редактировать процесс';
+            processNameInput.value = process.name;
+            modalOverlay.classList.add('active');
+            processNameInput.focus();
+        }
+        else {
+            console.log("Cant find process with id " + id)
+        }
+    }
+    // Функция открытия модального окна для удаления
+    function openDeleteModal(id) {
+        deleteMode = true;
+        const process = processes.find(p => p.id === id);
+        if (process) {
+            currentEditId = id;
+            modalTitle.textContent = 'Удаление процесса! Введите "' + process.name + '"';
+            processNameInput.value = '';
+            modalOverlay.classList.add('active');
+            processNameInput.focus();
+        }
+        else {
+            console.log("Cant find process with id " + process.id)
+        }
+    }
+    // Функция закрытия модального окна
+    function closeModal() {
+        modalOverlay.classList.remove('active');
+        processNameInput.value = '';
+        currentEditId = null;
+        deleteMode = false;
+    }
+    // Обработчики для модального окна
+    addProcessBtn.addEventListener('click', openCreateModal);
+    modalCancel.addEventListener('click', closeModal);
+    modalSave.addEventListener('click', saveProcess);
+    // Закрытие по клику на оверлей
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            closeModal();
+        }
+    });
+    // Закрытие по Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    // ========== УПРАВЛЕНИЕ ПРОЦЕССАМИ ==========
+    let processes = []
     let selectedProcessId = undefined;
 
+    // Получение процессов с сервера 
+    async function fetch_processes() {
+        // Очистка списка процессов
+        processes = []
+        // Запрос процессов от python eel
+        infos = []
+        await fetch("/processes")
+            .then(response => response.json())  
+            .then(data => infos = data.content)
+            .catch(error => console.error(error));
+        // Добавляем процессы в список
+        for (let i = 0; i < infos.length; i++) {
+            pr_id = infos[i]["id"]
+            pr_name = infos[i]["name"]
+            pr_avatar = infos[i]["avatar"]
+            pr_created = infos[i]["created"]
+            pr_option = infos[i]["option"]
+            pr_count = infos[i]["count"]
+
+            processes.push({ id: pr_id, name: pr_name, avatar: pr_avatar, badge: pr_count + ' элемента', meta: pr_created, option: pr_option })
+        }
+    }
+    // Функция обновления счетчика процессов
+    function updateProcessCount() {
+        processCount.textContent = `📋 Процессы (${processes.length})`;
+        if (processes.length > 0)
+            processCount.textContent += `(${processes.length})`
+    }
     // Обработка нажатия на процесс
     function selectProcess(id) {
         selectedProcessId = id;
@@ -143,9 +198,8 @@ async function initGUI() {
         if (option === 2) btn2.click();
         if (option === 3) btn3.click();
         if (option === 4) btn4.click();
-        if (option === 5) btn5.click();
-        if (option === 6) btn6.click();
     }
+    // Визуальная подсветка процесса
     function highlightProcess(id) {
         // Обновляем классы у всех элементов
         document.querySelectorAll('.process-item').forEach(item => {
@@ -212,50 +266,6 @@ async function initGUI() {
         highlightProcess(selectedProcessId)
         updateProcessCount();
     }
-    // Функция открытия модального окна для создания
-    function openCreateModal() {
-        currentEditId = null;
-        modalTitle.textContent = 'Новый процесс';
-        processNameInput.value = '';
-        modalOverlay.classList.add('active');
-        processNameInput.focus();
-    }
-    // Функция открытия модального окна для редактирования
-    function openEditModal(id) {
-        const process = processes.find(p => p.id === id);
-        if (process) {
-            currentEditId = id;
-            modalTitle.textContent = 'Редактировать процесс';
-            processNameInput.value = process.name;
-            modalOverlay.classList.add('active');
-            processNameInput.focus();
-        }
-        else {
-            console.log("Cant find process with id " + id)
-        }
-    }
-    // Функция открытия модального окна для удаления
-    function openDeleteModal(id) {
-        deleteMode = true;
-        const process = processes.find(p => p.id === id);
-        if (process) {
-            currentEditId = id;
-            modalTitle.textContent = 'Удаление процесса! Введите "' + process.name + '"';
-            processNameInput.value = '';
-            modalOverlay.classList.add('active');
-            processNameInput.focus();
-        }
-        else {
-            console.log("Cant find process with id " + process.id)
-        }
-    }
-    // Функция закрытия модального окна
-    function closeModal() {
-        modalOverlay.classList.remove('active');
-        processNameInput.value = '';
-        currentEditId = null;
-        deleteMode = false;
-    }
     // Функция сохранения процесса
     async function saveProcess() {
         const name = processNameInput.value.trim();
@@ -278,7 +288,6 @@ async function initGUI() {
                             },
                             body: JSON.stringify({ pr_id: process.id }),
                         })
-                        //await eel.delete_process(process.id)();
                     else {
                         alert('Неверно введено название!');
                         return;
@@ -292,7 +301,6 @@ async function initGUI() {
                         },
                         body: JSON.stringify({ pr_id: process.id, new_name: name }),
                     })
-                    //await eel.edit_process(process.id, name)();
 
                 await fetch_processes()
             }
@@ -313,30 +321,6 @@ async function initGUI() {
         renderProcesses();
         closeModal();
     }
-
-    // Инициализация
-    await fetch_processes()
-    renderProcesses();
-
-    // Обработчики для модального окна
-    addProcessBtn.addEventListener('click', openCreateModal);
-    
-    modalCancel.addEventListener('click', closeModal);
-    
-    modalSave.addEventListener('click', saveProcess);
-
-    // Закрытие по клику на оверлей
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-            closeModal();
-        }
-    });
-    // Закрытие по Escape
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-            closeModal();
-        }
-    });
     // Сохранение выбранной опции и обновление значения в списке процессов
     function set_option(option) {
         fetch("/processes/set-option", {
@@ -391,26 +375,7 @@ async function initGUI() {
         startTable()
     });
 
-    btn5.addEventListener('click', function(e) {
-        if (selectedProcessId == undefined)
-            return;
-
-        set_option(5);
-        setActiveButton(btn5);
-        updateContent(5);
-        startGraph()
-    });
-
-    btn6.addEventListener('click', function(e) {
-        if (selectedProcessId == undefined)
-            return;
-
-        set_option(6);
-        setActiveButton(btn6);
-        updateContent(6);
-        startGraph(true)
-    });
-
-    // Сразу нажимаем на чат
-    //btn1.click()
+    // ========== СТАРТ ==========
+    //await fetch_processes()
+    //renderProcesses();
 }
