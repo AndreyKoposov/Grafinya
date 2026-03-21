@@ -1,3 +1,7 @@
+window.onload = function() {
+    checkSession();
+}
+
 async function checkSession() {
     if (await auth())
         showSuccess();
@@ -40,8 +44,4 @@ function showError() {
     loadingText.classList.add('error');
 
     retryButton.style.display = 'block';
-}
-
-window.onload = function() {
-    checkSession();
 }
