@@ -2,7 +2,7 @@ window.onload = function() {
     initGUI();
 }
 
-function initGUI() {
+async function initGUI() {
     // // ========== DOM ЭЛЕМЕНТЫ ==========
     const processItems = document.getElementById('processItems');
     const processCount = document.getElementById('processCount');
@@ -154,9 +154,9 @@ function initGUI() {
         processes = []
         // Запрос процессов от python eel
         infos = []
-        await fetch("/processes")
+        await fetch("/api/processes")
             .then(response => response.json())  
-            .then(data => infos = data.content)
+            .then(data => infos = data.processes)
             .catch(error => console.error(error));
         // Добавляем процессы в список
         for (let i = 0; i < infos.length; i++) {
@@ -172,7 +172,7 @@ function initGUI() {
     }
     // Функция обновления счетчика процессов
     function updateProcessCount() {
-        processCount.textContent = `📋 Процессы (${processes.length})`;
+        processCount.textContent = `📋 Процессы `;
         if (processes.length > 0)
             processCount.textContent += `(${processes.length})`
     }
@@ -224,12 +224,13 @@ function initGUI() {
                 <div class="process-info">
                     <div class="process-name-container">
                         <span class="process-name" title="${process.name}">${process.name}</span>
-                        <button class="edit-process-btn" data-id="${process.id}" data-type="edit" title="Редактировать процесс">✎</button>
-                        <button class="edit-process-btn" data-id="${process.id}" data-type="delete" title="Удалить процесс">❌</button>
+                        
                     </div>
                     <div class="process-meta">
                         <span>${process.meta}</span>
-                        <span class="badge">${process.badge}</span>
+                        <!--<span class="badge">${process.badge}</span>-->
+                        <button class="edit-process-btn" data-id="${process.id}" data-type="edit" title="Редактировать процесс">✎</button>
+                        <button class="edit-process-btn" data-id="${process.id}" data-type="delete" title="Удалить процесс">❌</button>
                     </div>
                 </div>
             `;
@@ -315,7 +316,7 @@ function initGUI() {
             })
             .catch(error => console.error(error));
 
-            //await fetch_processes()
+            await fetch_processes()
         }
 
         renderProcesses();
@@ -376,6 +377,6 @@ function initGUI() {
     });
 
     // ========== СТАРТ ==========
-    //await fetch_processes()
-    //renderProcesses();
+    await fetch_processes()
+    renderProcesses();
 }

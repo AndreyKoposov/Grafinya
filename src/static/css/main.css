@@ -12,7 +12,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 12px;
 }
 
 /* Главный контейнер двух колонок */
@@ -76,7 +75,7 @@ body {
 .process-items {
     flex: 1;
     overflow-y: auto;
-    padding: 16px 12px;
+    padding: 6px;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -101,7 +100,7 @@ body {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 16px 18px;
+    padding: 4px 4px;
     background: white;
     border-radius: 16px;
     box-shadow: 0 2px 6px rgba(0, 20, 40, 0.03);
@@ -207,7 +206,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 7px;
-    padding: 24px 28px 16px 28px;
+    padding: 10px;
     border-bottom: 1px solid #eef2f6;
     background: white;
     padding-top: 8px;
@@ -552,17 +551,9 @@ body {
     padding: 0 20px 16px 20px;
 }
 
-.process-items {
-    padding: 12px;
-}
-
 /* Увеличиваем область контента */
 .content-area {
     padding: 20px;
-}
-
-.button-bar {
-    padding: 16px 20px 12px 20px;
 }
 
 /* Для очень маленьких экранов оставляем возможность скролла */
