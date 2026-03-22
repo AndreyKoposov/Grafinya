@@ -152,12 +152,7 @@ async function initGUI() {
     async function fetch_processes() {
         // Очистка списка процессов
         processes = []
-        // Запрос процессов от python eel
-        infos = []
-        await fetch("/api/processes")
-            .then(response => response.json())  
-            .then(data => infos = data.processes)
-            .catch(error => console.error(error));
+        infos = await api_processes_get()
         // Добавляем процессы в список
         for (let i = 0; i < infos.length; i++) {
             pr_id = infos[i]["id"]
@@ -242,11 +237,8 @@ async function initGUI() {
         document.querySelectorAll('.process-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 // Не выделяем, если кликнули на кнопку редактирования или удаления
-                if (e.target.classList.contains('edit-process-btn')) {
-                    return;
-                }
-                const id = item.data_id;
-                selectProcess(id);
+                if (e.target.classList.contains('edit-process-btn')) return;
+                selectProcess(item.data_id);
             });
         });
 
@@ -254,7 +246,6 @@ async function initGUI() {
         document.querySelectorAll('.edit-process-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                console.log("here")
                 const id = btn.dataset.id;
                 const type = btn.dataset.type;
                 if (type === "delete")
@@ -282,39 +273,20 @@ async function initGUI() {
             if (process) {
                 if (deleteMode) {
                     if (name === process.name)
-                        await fetch("/processes/delete", {
-                            method: "POST",
-                            headers: {
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({ pr_id: process.id }),
-                        })
+                        await api_process_delete(process.id)
                     else {
                         alert('Неверно введено название!');
                         return;
                     }
                 }
                 else
-                    await fetch("/processes/rename", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ pr_id: process.id, new_name: name }),
-                    })
+                    await api_process_rename(process.id, name)
 
                 await fetch_processes()
             }
         } else {
             // Создание нового
-            await fetch("/api/processes/create", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ name: name }),
-            })
-            .catch(error => console.error(error));
+            await api_process_create(name)
 
             await fetch_processes()
         }

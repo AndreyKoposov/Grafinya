@@ -1,7 +1,7 @@
 from fastapi.routing import APIRouter
 from fastapi import Depends, Request
 
-from src.app.schemas.process import ProcessData
+from src.app.schemas.process import ProcessCreateData, ProcessEditData
 from src.app.services.process import ProcessService
 from src.app.repositories.process import ProcessRepo
 from src.app.db.engine import get_session
@@ -15,41 +15,31 @@ async def get_process_service(session=Depends(get_session, scope='function')) ->
 
 @router.get('/')
 async def get_processes(request: Request,
-                  service: ProcessService = Depends(get_process_service)):
+                        service: ProcessService = Depends(get_process_service)):
     user_id = request.cookies.get('grafinya_session')
     pr_list = []
     if user_id:
-        for pr in await service.get_all(user_id):
-            pr_list.append({
-                'id': pr.id,
-                'name': pr.name,
-                'avatar': pr.name[0],
-                'created': pr.created_at.strftime("%Y-%m-%d"),
-                'option': 0,
-                'count': 2
-            })
+        pr_list = await service.get_all(user_id)
 
     return {
         'processes': pr_list
     }
 
-@router.get('/id')
-def get_process():
-    pass
-
 @router.post('/create')
 async def create_process(request: Request,
-                        proc_data: ProcessData,
-                        service: ProcessService = Depends(get_process_service)):
+                         proc_data: ProcessCreateData,
+                         service: ProcessService = Depends(get_process_service)):
     user_id = request.cookies.get('grafinya_session')
     if user_id:
         await service.create(user_id, proc_data.name)
 
 
-@router.post('/edit')
-def edit_process():
-    pass
+@router.post('/rename')
+async def edit_process(proc_data: ProcessEditData,
+                       service: ProcessService = Depends(get_process_service)):
+    await service.rename(proc_data.pr_id, proc_data.new_name)
 
-@router.get('/delete')
-def delete_process():
-    pass
+@router.post('/delete')
+async def delete_process(proc_data: ProcessEditData,
+                         service: ProcessService = Depends(get_process_service)):
+    await service.delete(proc_data.pr_id)
