@@ -1,5 +1,5 @@
 from uuid import UUID
-from sqlalchemy import select, insert, and_
+from sqlalchemy import select, insert, and_, update
 from sqlalchemy.sql import functions
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -32,4 +32,10 @@ class MessageRepo():
             sender=sender,
             read=read
         )
+        await self.session.execute(query)
+
+    async def mark_read(self, msg_id: UUID):
+        query = update(Messages)\
+                .where(Messages.id == msg_id)\
+                .values(read=True)
         await self.session.execute(query)
