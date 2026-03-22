@@ -10,14 +10,14 @@ from src.app.services.auth import AuthService
 router = APIRouter()
 
 
-async def get_auth_service(session=Depends(get_session)) -> AuthService:
+async def get_auth_service(session=Depends(get_session, scope='function')) -> AuthService:
     user_repo = UserRepo(session)
     return AuthService(user_repo)
 
 @router.post('/login')
 async def login(request: Request,
                 response: Response,
-                auth: AuthService = Depends(get_auth_service, scope='function')):
+                auth: AuthService = Depends(get_auth_service)):
 
     orioks_identity = request.cookies.get('orioks_identity')
     if orioks_identity is None:

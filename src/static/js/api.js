@@ -41,3 +41,14 @@ async function api_processes_get() {
 
     return processes
 }
+
+async function api_fetch_msgs() {
+    has_new = false;
+
+    await fetch("api/messages/fetch")
+        .then(response => response.json())  
+        .then(data => has_new = data.has_new)
+        .catch(error => console.error(error));
+
+    return has_new
+}

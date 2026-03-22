@@ -1,7 +1,7 @@
 import asyncio
 
 from src.app.db.engine import engine, base
-from src.app.models import user, process
+from src.app.models import user, process, messages
 
 
 async def migrate():
@@ -12,6 +12,7 @@ async def migrate():
         await conn.run_sync(base.metadata.create_all)
         print(f"Created <{user.User.__tablename__}>")
         print(f"Created <{process.Process.__tablename__}>")
+        print(f"Created <{messages.Messages.__tablename__}>")
 
         print("Closing connection...")
 
