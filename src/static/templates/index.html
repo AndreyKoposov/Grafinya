@@ -6,6 +6,7 @@
     <title>Онтологический анализ процессов</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/chat.css">
 </head>
 <body>
     <div class="app">
@@ -50,19 +51,27 @@
             </div>
         </div>
         <!-- Правая колонка: чат с ИИ -->
-        <div id="ai-chat" class="ai-chat">
-           <div class="process-list-header">
-               <span>📋 Процессы</span>
-               <span class="process-count" id="processCount">8 активных</span>
-               <button class="add-process-btn" id="addProcessBtn" title="Добавить новый процесс">+</button>
-           </div>
-           <div class="process-items" id="processItems">
-               <!-- Процессы будут динамически добавляться сюда -->
-           </div>
-           <!-- Индикатор состояния соединения -->
-            <div class="connection-status process-footer" id="connectionStatus">
-                <div class="status-indicator" id="statusIndicator"></div>
-                <span class="status-text" id="statusText">Соединение установлено</span>
+        <div class="chat-container" id="ai-chat">
+            <!-- Заголовок чата - всегда сверху -->
+            <div class="chat-header">
+                <h3>💬 Ассистент по онтологическому анализу</h3>
+            </div>
+            <!-- Область сообщений - скроллится -->
+            <div class="chat-messages" id="chatMessages">
+            </div>
+            <!-- Область ввода - всегда снизу -->
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Введите сообщение..." autocomplete="off">
+                    <button class="send-btn" id="sendMessageBtn" title="Отправить">➤</button>
+                </div>
+                <!-- Кнопки команд -->
+                <div class="command-buttons" id="commandButtons">
+                    <button class="command-btn" data-command="/help">/help</button>
+                    <button class="command-btn" data-command="/analyze">/analyze</button>
+                    <button class="command-btn" data-command="/ontology">/ontology</button>
+                    <button class="command-btn" data-command="/clear">/clear</button>
+                </div>
             </div>
         </div>
         <!-- Кнопка скрытия правой панели-->
