@@ -61,11 +61,14 @@ async function api_check_msgs(signal) {
     })
         .then(response => response.json())  
         .then(data => has_new = data.has_new)
+        .catch(error => console.error(error));
 
     return has_new
 }
 
 async function api_send_msg(text) {
+    to_wait = false;
+
     await fetch("api/messages/send", {
         method: "POST",
         headers: {
@@ -73,7 +76,11 @@ async function api_send_msg(text) {
         },
         body: JSON.stringify({ text: text }),
     })
-    .catch(error => console.error(error));
+        .then(response => response.json())  
+        .then(data => to_wait = data.to_wait)
+        .catch(error => console.error(error));
+
+    return to_wait
 }
 
 async function api_ping(signal) {

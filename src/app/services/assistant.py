@@ -25,9 +25,50 @@ class Assistant:
     async def has_unread(self, user_id: str) -> bool:
         return await self.repo.has_unread(UUID(user_id))
 
-    async def send(self, user_id: str, text: str):
+    async def send(self, user_id: str, text: str) -> bool:
         await self.repo.create(UUID(user_id), text, 'user', True)
+
+        if text.startswith('/'):
+            await self.__do_command(user_id, text)
+            return False
+
         asyncio.create_task(self.call_ai(user_id, text))
+        return True
+
+    async def __do_command(self, user_id: str, user_input: str):
+        match user_input:
+            case "/help":
+                await self.__help(user_id)
+            case "/ontology":
+                await self.__ontology(user_id)
+            case "/clear":
+                await self.__clear(user_id)
+            case _:
+                await self.__unknown(user_id)
+
+    async def __help(self, user_id: str):
+        answer = "Список команд:\n"\
+                 "\t/help - список команд\n"\
+                 "\t/analyze - анализ описания процесса\n"\
+                 "\t/ontology - отчет об онтологии процесса\n"\
+                 "\t/clear - очистка чата\n"
+        await self.__answer(user_id, answer)
+
+    async def __ontology(self, user_id: str):
+        answer = "На данный момент процесс состоит из 4 этапов"
+        await self.__answer(user_id, answer)
+
+    async def __clear(self, user_id: str):
+        await self.repo.delete_by_user(UUID(user_id))
+        answer = "Чат очищен!"
+        await self.__answer(user_id, answer)
+
+    async def __unknown(self, user_id: str):
+        answer = "Неизвестная команда, введите /help для просмотра списка доступных комманд."
+        await self.__answer(user_id, answer)
+
+    async def __answer(self, user_id: str, text: str):
+        await self.repo.create(UUID(user_id), text, 'ai', False)
 
     async def call_ai(self, user_id: str, text: str):
         async with maker() as session:

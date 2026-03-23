@@ -45,5 +45,10 @@ async def send(request: Request,
                assistant: Assistant = Depends(get_assistant)):
     user_id = request.cookies.get('grafinya_session')
 
+    to_wait = False
     if user_id:
-        await assistant.send(user_id, msg_data.text)
+        to_wait = await assistant.send(user_id, msg_data.text)
+
+    return {
+        'to_wait': to_wait
+    }

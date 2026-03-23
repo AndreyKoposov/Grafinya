@@ -76,3 +76,48 @@ function getConnectionChecker(fetch_request, timeout) {
         getCurrentStatus: () => isConnected
     };
 }
+
+function getMsgsChecker(fetch_request, timeout) {
+    let intervalId = null;
+    let hasNew = false;
+    
+    async function checkMsgs() {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            hasNew = await fetch_request(controller.signal)
+            clearTimeout(timeoutId); 
+
+            if (hasNew)
+                stop();
+            
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    
+    let onStop = null;
+    
+    function start() {
+        if (intervalId === null) {
+            checkMsgs();
+            intervalId = setInterval(checkMsgs, 500);
+            console.log('Msgs checking started');
+        }
+    }
+    
+    function stop() {
+        if (intervalId !== null) {
+            clearInterval(intervalId);
+            intervalId = null;
+            console.log('Msgs checking stopped');
+            onStop();
+        }
+    }
+
+    return {
+        start,
+        stop,
+        onStop: (callback) => { onStop = callback; },
+    };
+}

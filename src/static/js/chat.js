@@ -61,12 +61,22 @@ function startChat() {
         const text = chatInput.value.trim();
         if (!text) return;
         chatInput.value = '';
-        await api_send_msg(text)
+        const to_wait = await api_send_msg(text)
         await loadMessages()
 
+        if (to_wait)
+            waitAnswer()
+    }
+
+    function waitAnswer() {
         showTypingIndicator();
-        await loadMessages()
-        hideTypingIndicator();
+
+        const msgChecker = getMsgsChecker(api_check_msgs, 200);
+        msgChecker.onStop(async () => {
+            await loadMessages();
+            hideTypingIndicator();
+        });
+        msgChecker.start();
     }
 
     // Отрисовка всех сообщений

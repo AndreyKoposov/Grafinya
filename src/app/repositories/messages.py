@@ -1,5 +1,5 @@
 from uuid import UUID
-from sqlalchemy import select, insert, and_, update
+from sqlalchemy import select, insert, and_, update, delete
 from sqlalchemy.sql import functions
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -38,4 +38,8 @@ class MessageRepo():
         query = update(Messages)\
                 .where(Messages.id == msg_id)\
                 .values(read=True)
+        await self.session.execute(query)
+
+    async def delete_by_user(self, user_id: UUID):
+        query = delete(Messages).where(Messages.user_id == user_id)
         await self.session.execute(query)
