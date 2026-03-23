@@ -1,6 +1,7 @@
 window.onload = function() {
     initGUI();
     startChat();
+    startChecker();
 }
 
 async function initGUI() {
@@ -312,44 +313,58 @@ async function initGUI() {
     btn1.addEventListener('click', function(e) {
         if (selectedProcessId == undefined)
             return;
-
-        set_option(1);
-        setActiveButton(btn1);
-        updateContent(1);
-        startChat()
     });
 
     btn2.addEventListener('click', function(e) {
         if (selectedProcessId == undefined)
             return;
-
-        set_option(2);
-        setActiveButton(btn2);
-        updateContent(2);
-        initXMLviewer()
     });
 
     btn3.addEventListener('click', function(e) {
         if (selectedProcessId == undefined)
             return;
-
-        set_option(3);
-        setActiveButton(btn3);
-        updateContent(3);
-        startStructure()
     });
 
     btn4.addEventListener('click', function(e) {
         if (selectedProcessId == undefined)
             return;
-
-        set_option(4);
-        setActiveButton(btn4);
-        updateContent(4);
-        startTable()
     });
 
     // ========== СТАРТ ==========
     await fetch_processes()
     renderProcesses();
+}
+
+function startChecker() {
+    // Создание проверщика
+    const connectionChecker = getConnectionChecker(api_ping, 10000);
+    // Устанавливаем обработчики событий
+    connectionChecker.onConnectionLost(() => {
+        setConnectionStatus(false)
+    });
+    connectionChecker.onConnectionRestored(() => {
+        setConnectionStatus(true)
+    });
+    connectionChecker.onStatusChange((isConnected, statusCode, error) => {
+        console.log(`Статус соединения: ${isConnected ? 'Подключено' : 'Отключено'}`, 
+                    statusCode ? `Код: ${statusCode}` : '',
+                    error ? `Ошибка: ${error.message}` : '');
+    });
+    // Запускаем проверку
+    connectionChecker.start();
+}
+
+function setConnectionStatus(isOnline) {
+    const indicator = document.getElementById('statusIndicator');
+    //const statusText = document.getElementById('statusText');
+    
+    if (isOnline) {
+        indicator.classList.remove('offline');
+        indicator.classList.add('online');
+        //statusText.textContent = 'Соединение установлено';
+    } else {
+        indicator.classList.remove('online');
+        indicator.classList.add('offline');
+        //statusText.textContent = 'Нет соединения';
+    }
 }

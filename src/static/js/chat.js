@@ -65,7 +65,7 @@ function startChat() {
         await loadMessages()
 
         showTypingIndicator();
-        // checking for new msgs
+        await loadMessages()
         hideTypingIndicator();
     }
 

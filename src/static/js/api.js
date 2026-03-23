@@ -53,13 +53,14 @@ async function api_fetch_msgs() {
     return msgs
 }
 
-async function api_check_msgs() {
+async function api_check_msgs(signal) {
     has_new = false;
 
-    await fetch("api/messages/check")
+    await fetch("api/messages/check", {
+        signal: signal
+    })
         .then(response => response.json())  
         .then(data => has_new = data.has_new)
-        .catch(error => console.error(error));
 
     return has_new
 }
@@ -73,4 +74,15 @@ async function api_send_msg(text) {
         body: JSON.stringify({ text: text }),
     })
     .catch(error => console.error(error));
+}
+
+async function api_ping(signal) {
+    const response = await fetch("ping", {
+       method: 'HEAD',
+       cache: 'no-cache',
+       signal: signal
+    })
+    .catch(error => console.error(error));
+
+    return response
 }

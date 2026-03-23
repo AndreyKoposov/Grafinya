@@ -1,5 +1,5 @@
 import json
-from gigachat import GigaChat, Messages, MessagesRole
+from gigachat import GigaChat
 
 from . import engine
 

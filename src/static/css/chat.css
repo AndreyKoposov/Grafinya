@@ -83,7 +83,7 @@
     justify-content: flex-end;
 }
 
-.message.assistant {
+.message.ai {
     justify-content: flex-start;
 }
 
@@ -102,8 +102,8 @@
     box-shadow: 0 4px 12px rgba(31, 58, 107, 0.15);
 }
 
-.message.assistant .message-bubble {
-    background: #f9abff;
+.message.ai .message-bubble {
+    background: #fddbff;
     color: #0b2b4f;
     border-bottom-left-radius: 4px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -120,7 +120,7 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
-.message.assistant .message-time {
+.message.ai .message-time {
     color: #64748b;
 }
 

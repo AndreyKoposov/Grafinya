@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
 
 from src.app.config import TEMPLATES
@@ -22,3 +22,7 @@ def home(request: Request):
         return TEMPLATES.TemplateResponse(request, 'welcome.html')
 
     return TEMPLATES.TemplateResponse(request, 'index.html')
+
+@app.head('/ping')
+def ping():
+    return Response(status_code=200)
