@@ -1,13 +1,12 @@
 from uuid import UUID
 import asyncio
 
+from src.app.db.engine import maker
 from src.app.repositories.messages import MessageRepo
 from src.app.ai.engine import engine
 
 
 class Assistant:
-    ai_semaphore = asyncio.Semaphore(1)
-
     def __init__(self, repo: MessageRepo) -> None:
         self.repo = repo
 
@@ -31,6 +30,13 @@ class Assistant:
         asyncio.create_task(self.call_ai(user_id, text))
 
     async def call_ai(self, user_id: str, text: str):
-        async with Assistant.ai_semaphore:
-            response = await engine.chat(text)
-        await self.repo.create(UUID(user_id), response, 'ai', False)
+        async with maker() as session:
+            try:
+                repo = MessageRepo(session)
+                response = await engine.chat(text)
+                await repo.create(UUID(user_id), response, 'ai', False)
+                await session.commit()
+            except Exception as e:
+                await session.rollback()
+                print(f"Ошибка сохранения ответа AI: {e}")
+                raise

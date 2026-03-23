@@ -1,5 +1,5 @@
 from uuid import uuid4
-from datetime import datetime, timezone
+from datetime import datetime
 from sqlalchemy import Column, String, Enum, ForeignKey, DateTime, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -14,7 +14,7 @@ class Messages(base):
     text = Column(String(500), nullable=False)
     sender = Column(Enum('user', 'ai', name='sender'), nullable=False)
     read = Column(Boolean)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.now)
 
 
     def __repr__(self) -> str:

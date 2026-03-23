@@ -1,5 +1,5 @@
 from uuid import uuid4
-from datetime import datetime, timezone
+from datetime import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -12,7 +12,7 @@ class Process(base):
     id = Column(UUID, primary_key=True, default=uuid4)
     user_id = Column(UUID, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     name = Column(String(50), nullable=False, index=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.now)
 
     def __repr__(self):
         return f"<Process #{self.name}>"

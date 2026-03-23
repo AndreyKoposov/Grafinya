@@ -1,4 +1,3 @@
-import json
 from gigachat import GigaChat
 
 from . import engine
@@ -6,6 +5,8 @@ from . import engine
 
 class GigaChatEngine(engine.AIEngine):
     def __init__(self, key: str, model: str, temp: float) -> None:
+        super().__init__(1)
+
         self.giga = GigaChat(
             credentials=key,
             model=model,
@@ -15,9 +16,8 @@ class GigaChatEngine(engine.AIEngine):
             timeout=30,
         )
 
+    @engine.AIEngine.with_semaphore
     async def chat(self, query: str) -> str:
         response = await self.giga.achat(query)
         # print(json.loads(response.choices[0].message.content))
         return response.choices[0].message.content
-# Привет, приведи список самых популярных языков программирования, только очень коротко, просто список и все
-# Привет, это проверка, что API работает.

@@ -356,15 +356,12 @@ function startChecker() {
 
 function setConnectionStatus(isOnline) {
     const indicator = document.getElementById('statusIndicator');
-    //const statusText = document.getElementById('statusText');
     
     if (isOnline) {
         indicator.classList.remove('offline');
         indicator.classList.add('online');
-        //statusText.textContent = 'Соединение установлено';
     } else {
         indicator.classList.remove('online');
         indicator.classList.add('offline');
-        //statusText.textContent = 'Нет соединения';
     }
 }

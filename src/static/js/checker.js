@@ -19,20 +19,24 @@ function getConnectionChecker(fetch_request, timeout) {
                     onConnectionRestored?.();
                 else
                     onConnectionLost?.();
-                onStatusChange?.(newStatus, response.status);
                 isConnected = newStatus;
             }
+
+            // Если нет - вызываем колбэк с результатом проверки
+            onStatusChange?.(newStatus, response.status);
             
         } catch (error) {
             // Если произошла ошибка (сеть недоступна, таймаут и т.д.)
             if (error.name === 'AbortError') {
                 console.log('Request timeout - connection may be slow or unavailable');
             }
-            else if (isConnected) {
+            
+            if (isConnected) {
                 onConnectionLost?.();
                 isConnected = false;
-                onStatusChange?.(false, null, error);
             }
+
+            onStatusChange?.(false, null, error);
         }
     }
     
