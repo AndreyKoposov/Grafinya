@@ -1,5 +1,6 @@
 /* Контейнер чата - использует всю доступную высоту */
 .chat-container {
+    width: 30%;
     display: flex;
     flex-direction: column;
     height: 100%; /* Важно: занимает 100% высоты родителя */
@@ -102,7 +103,7 @@
 }
 
 .message.assistant .message-bubble {
-    background: #f1f5f9;
+    background: #f9abff;
     color: #0b2b4f;
     border-bottom-left-radius: 4px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);

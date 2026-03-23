@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from src.app.repositories.messages import MessageRepo
+from src.app.ai.engine import engine
 
 
 class Assistant:
@@ -24,3 +25,5 @@ class Assistant:
 
     async def send(self, user_id: str, text: str):
         await self.repo.create(UUID(user_id), text, 'user', True)
+        response = await engine.chat(text)
+        await self.repo.create(UUID(user_id), response, 'ai', False)
