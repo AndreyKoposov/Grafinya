@@ -9,6 +9,7 @@ async function initGUI() {
     const processItems = document.getElementById('processItems');
     const processCount = document.getElementById('processCount');
     const addProcessBtn = document.getElementById('addProcessBtn');
+    const subBtnBar = document.getElementById('sub-btn-bar')
 
     // Основные кнопки
     const btn1 = document.getElementById('btn1');
@@ -48,16 +49,35 @@ async function initGUI() {
         activeBtn.classList.add('active');
     }
 
-    // Функция обновления контента
-    function updateContent(btnNumber) {
+    // Функция установки основного контента
+    function setContent(btnNumber) {
         if (btnNumber == 1)
-            contentArea.innerHTML = "";
+            renderSubBtns(getStructureSubBtns())
         if (btnNumber == 2)
-            contentArea.innerHTML = "";
+            renderSubBtns([])
         if (btnNumber == 3)
-            contentArea.innerHTML = "";
+            renderSubBtns([])
         if (btnNumber == 4)
-            contentArea.innerHTML = "";
+            renderSubBtns([])
+    }
+
+    // Отрисовка кнопок под-меню
+    function renderSubBtns(btns) {
+        subBtnBar.innerHTML = '';
+        btns.forEach(btn => {
+            const btnElement = document.createElement('button');
+
+            btnElement.className = 'tab-btn';
+            btnElement.data_id = btn.id
+            btnElement.innerHTML = btn.name;
+            
+            subBtnBar.appendChild(btnElement);
+
+            btnElement.addEventListener('click', (e) => { 
+                contentArea.innerHTML = btn.getContent() 
+                btn.start()
+            });
+        });
     }
 
     // ========== МОДАЛЬНОЕ ОКНО ==========
@@ -311,21 +331,29 @@ async function initGUI() {
 
     // Обработчики для кнопок правой панели
     btn1.addEventListener('click', function(e) {
+        setActiveButton(btn1)
+        setContent(1)
         if (selectedProcessId == undefined)
             return;
     });
 
     btn2.addEventListener('click', function(e) {
+        setActiveButton(btn2)
+        setContent(2)
         if (selectedProcessId == undefined)
             return;
     });
 
     btn3.addEventListener('click', function(e) {
+        setActiveButton(btn3)
+        setContent(3)
         if (selectedProcessId == undefined)
             return;
     });
 
     btn4.addEventListener('click', function(e) {
+        setActiveButton(btn4)
+        setContent(4)
         if (selectedProcessId == undefined)
             return;
     });
