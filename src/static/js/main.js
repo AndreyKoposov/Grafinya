@@ -48,6 +48,14 @@ async function initGUI() {
         allBtns.forEach(btn => btn.classList.remove('active'));
         activeBtn.classList.add('active');
     }
+    // Функция сброса активного класса кнопок под-меню
+    function setActiveSubButton(activeBtnId) {
+        document.querySelectorAll('.sub-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeBtn = document.getElementById('sub-btn-' + activeBtnId)
+        activeBtn.classList.add('active');
+    }
 
     // Функция установки основного контента
     function setContent(btnNumber) {
@@ -58,7 +66,7 @@ async function initGUI() {
         if (btnNumber == 3)
             renderSubBtns(getOntologySubBtns())
         if (btnNumber == 4)
-            renderSubBtns([])
+            renderSubBtns(getPredictSubBtns())
     }
 
     // Отрисовка кнопок под-меню
@@ -67,15 +75,17 @@ async function initGUI() {
         btns.forEach(btn => {
             const btnElement = document.createElement('button');
 
-            btnElement.className = 'tab-btn';
+            btnElement.className = 'tab-btn sub-btn';
+            btnElement.id = "sub-btn-" + btn.id
             btnElement.data_id = btn.id
             btnElement.innerHTML = btn.name;
             
             subBtnBar.appendChild(btnElement);
 
             btnElement.addEventListener('click', (e) => { 
-                contentArea.innerHTML = btn.getContent() 
-                btn.start()
+                contentArea.innerHTML = btn.getContent();
+                btn.start();
+                setActiveSubButton(btn.id);
             });
         });
     }
@@ -195,6 +205,7 @@ async function initGUI() {
     }
     // Обработка нажатия на процесс
     function selectProcess(id) {
+        return;
         selectedProcessId = id;
         // Визуальная подсветка
         highlightProcess(id)
