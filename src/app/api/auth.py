@@ -1,28 +1,50 @@
-from fastapi import APIRouter, Request
-from fastapi.templating import Jinja2Templates
+import re
+from urllib.parse import unquote
+from fastapi import APIRouter, Request, Response, Depends
+
+from src.app.db.engine import get_session
+from src.app.repositories.user import UserRepo
+from src.app.services.auth import AuthService
 
 
 router = APIRouter()
-templates = Jinja2Templates(directory='src/static/templates')
 
-@router.get('/')
-def welcome(request: Request):
-    context = {
-        'request': request,
-        'app_name': 'Grafinya',
-        'app_header': 'Онтологический анализ процессов',
-        'welcome_msg': 'Добро пожаловать! Представьтесь, пожалуйста',
-    }
-    return templates.TemplateResponse('welcome.html', context=context)
+
+async def get_auth_service(session=Depends(get_session, scope='function')) -> AuthService:
+    user_repo = UserRepo(session)
+    return AuthService(user_repo)
 
 @router.post('/login')
-def login():
-    pass
+async def login(request: Request,
+                response: Response,
+                auth: AuthService = Depends(get_auth_service)):
 
-@router.post('/logout')
-def logout():
-    pass
+    orioks_identity = request.cookies.get('orioks_identity')
+    if orioks_identity is None:
+        return {
+            'success': False,
+            'error': 'Need orioks auth'
+        }
 
-@router.get('/me')
-def me():
-    pass
+    orioks_id = extract_orioks_id(orioks_identity)
+    if not orioks_id:
+        return {
+            'success': False,
+            'error': 'Cant parse orioks_id'
+        }
+
+    success, user_id = await auth.login_or_register(orioks_id)
+    if success:
+        response.set_cookie(key='grafinya_session', value=str(user_id))
+
+    return {
+        'success': success,
+        'error': ""
+    }
+
+
+def extract_orioks_id(cookie_value):
+    match = re.search(r'\[(\d+),', unquote(cookie_value))
+    if match:
+        return match.group(1)
+    return None

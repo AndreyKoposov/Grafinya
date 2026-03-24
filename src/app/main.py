@@ -1,6 +1,7 @@
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
+
+from src.app.config import TEMPLATES
 from src.app.api.router import router
 
 
@@ -14,9 +15,14 @@ app.include_router(
 )
 
 @app.get('/')
-def home():
-    return RedirectResponse('/api/auth/')
+def home(request: Request):
+    session = request.cookies.get('grafinya_session')
 
-@app.get('/dashboard')
-def dashboard():
-    return {'msg': 'Dashboard'}
+    if session is None:
+        return TEMPLATES.TemplateResponse(request, 'welcome.html')
+
+    return TEMPLATES.TemplateResponse(request, 'index.html')
+
+@app.head('/ping')
+def ping():
+    return Response(status_code=200)

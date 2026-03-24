@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онтологический анализ процессов</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/css/table-viewer.css">
+    <link rel="stylesheet" href="/static/css/xml-viewer.css">
+    <link rel="stylesheet" href="/static/css/graph.css">
+    <link rel="stylesheet" href="/static/css/stages.css">
+    <link rel="stylesheet" href="/static/css/entities.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/chat.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Кнопка скрытия левой панели-->
+        <button class="hide-sidebar-btn" id="hide-leftbar-btn">
+            <span>◀</span>
+        </button>
+        <!-- Левая колонка: список процессов в стиле чатов -->
+        <div id="process-list" class="process-list">
+           <div class="process-list-header">
+               <span id="processCount">📋 Процессы (3)</span>
+               <button class="add-process-btn" id="addProcessBtn" title="Добавить новый процесс">+</button>
+           </div>
+           <div class="process-items" id="processItems">
+               <!-- Процессы будут динамически добавляться сюда -->
+           </div>
+           <!-- Индикатор состояния соединения -->
+            <div class="connection-status process-footer" id="connectionStatus">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span class="status-text" id="loginText">8213531</span>
+            </div>
+        </div>
+        <!-- Центральная колонка: кнопки + контент -->
+        <div class="main-panel">
+            <!-- Кнопки основного меню-->
+            <div class="button-bar">
+                <button class="tab-btn" id="btn1">Структура</button>
+                <button class="tab-btn" id="btn2">Анализ</button>
+                <button class="tab-btn" id="btn3">Онтология</button>
+                <button class="tab-btn" id="btn4">Предиктивная модель</button>
+            </div>
+            <!-- Кнопки под-меню -->
+            <div class="button-bar" id="sub-btn-bar">
+            </div>
+
+            <!-- Динамический контент -->
+            <div class="content-area" id="contentArea">
+            </div>
+        </div>
+        <!-- Правая колонка: чат с ИИ -->
+        <div class="chat-container" id="ai-chat">
+            <!-- Заголовок чата - всегда сверху -->
+            <div class="chat-header">
+                <h3>💬 Ассистент по онтологическому анализу</h3>
+            </div>
+            <!-- Область сообщений - скроллится -->
+            <div class="chat-messages" id="chatMessages">
+            </div>
+            <!-- Область ввода - всегда снизу -->
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Введите сообщение..." autocomplete="off">
+                    <button class="send-btn" id="sendMessageBtn" title="Отправить">➤</button>
+                </div>
+                <!-- Кнопки команд -->
+                <div class="command-buttons" id="commandButtons">
+                    <button class="command-btn" data-command="/help">/help</button>
+                    <button class="command-btn" data-command="/analyze">/analyze</button>
+                    <button class="command-btn" data-command="/ontology">/ontology</button>
+                    <button class="command-btn" data-command="/clear">/clear</button>
+                </div>
+            </div>
+        </div>
+        <!-- Кнопка скрытия правой панели-->
+        <button class="hide-sidebar-btn" id="hide-rightbar-btn">
+            <span>▶</span>
+        </button>
+    </div>
+
+    <!-- Шаблоны html -->
+    <script src="/static/js/html/table-viewer.html.js"></script>
+    <script src="/static/js/html/xml-viewer.html.js"></script>
+    <script src="/static/js/html/simulation.html.js"></script>
+    <script src="/static/js/html/stats.html.js"></script>
+    <script src="/static/js/html/graph.html.js"></script>
+    <script src="/static/js/html/entities.html.js"></script>
+    <script src="/static/js/html/stages.html.js"></script>
+    <script src="/static/js/html/params.html.js"></script>
+    <!-- Скрипты вкладки "Онтология" -->
+    <script src="/static/js/model/table-viewer.js"></script>
+    <script src="/static/js/model/model.js"></script>
+    <!-- Скрипты вкладки "Онтология" -->
+    <script src="/static/js/ontology/xml-viewer.js"></script>
+    <script src="/static/js/ontology/ontology.js"></script>
+    <!-- Скрипты вкладки "Анализ" -->
+    <script src="/static/js/analyze/graph.js"></script>
+    <script src="/static/js/analyze/analyze.js"></script>
+    <!-- Скрипты вкладки "Структура" -->
+    <script src="/static/js/structure/stages.js"></script>
+    <script src="/static/js/structure/entities.js"></script>
+    <script src="/static/js/structure/structure.js"></script>
+    <!-- Вспомогательные скрипты: api вызовы, чат с ИИ, проверка соединения -->
+    <script src="/static/js/checker.js"></script>
+    <script src="/static/js/chat.js"></script>
+    <script src="/static/js/api.js"></script>
+    <!-- Главный скрипт запуска приложения -->
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
