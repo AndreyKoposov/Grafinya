@@ -54,9 +54,9 @@ async function initGUI() {
         if (btnNumber == 1)
             renderSubBtns(getStructureSubBtns())
         if (btnNumber == 2)
-            renderSubBtns([])
+            renderSubBtns(getAnalyzeSubBtns())
         if (btnNumber == 3)
-            renderSubBtns([])
+            renderSubBtns(getOntologySubBtns())
         if (btnNumber == 4)
             renderSubBtns([])
     }
