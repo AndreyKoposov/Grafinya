@@ -1,11 +1,19 @@
 from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
-from src.app.config import TEMPLATES
+from src.app.config import TEMPLATES, DEBUG
 from src.app.api.router import router
 
 
 app = FastAPI(title='Grafinya')
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://orioks.miet.ru"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.mount('/static', StaticFiles(directory='src/static'), name='static')
 
 app.include_router(
@@ -26,3 +34,9 @@ def home(request: Request):
 @app.head('/ping')
 def ping():
     return Response(status_code=200)
+
+if DEBUG:
+    @app.get('/check_cookies')
+    def check_cookies(request: Request):
+        print("Received cookies:", dict(request.cookies))
+        return Response(status_code=200)
