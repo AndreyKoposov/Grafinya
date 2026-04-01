@@ -1,32 +1,33 @@
 from uuid import UUID
 import asyncio
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.db.engine import maker
-from src.app.repositories.messages import MessageRepo
 from src.app.ai.engine import engine
+from src.app.models.messages import Messages
 
 
 class Assistant:
-    def __init__(self, repo: MessageRepo) -> None:
-        self.repo = repo
+    def __init__(self, session: AsyncSession) -> None:
+        self.s = session
 
     async def fetch(self, user_id: str) -> list:
         msgs = []
-        for msg in await self.repo.get_last_n(UUID(user_id), 30):
+        for msg in await Messages.get_last_n(self.s, UUID(user_id), 30):
             msgs.append({
                 'text': msg.text,
                 'sender': msg.sender,
                 'time': msg.created_at.strftime('%H:%M')
             })
             if isinstance(msg.id, UUID):
-                await self.repo.mark_read(msg.id)
+                await Messages.mark_read(self.s, msg.id)
         return msgs
 
     async def has_unread(self, user_id: str) -> bool:
-        return await self.repo.has_unread(UUID(user_id))
+        return await Messages.has_unread(self.s, UUID(user_id))
 
     async def send(self, user_id: str, text: str) -> bool:
-        await self.repo.create(UUID(user_id), text, 'user', True)
+        await Messages.create(self.s, UUID(user_id), text, 'user', True)
 
         if text.startswith('/'):
             await self.__do_command(user_id, text)
@@ -59,7 +60,7 @@ class Assistant:
         await self.__answer(user_id, answer)
 
     async def __clear(self, user_id: str):
-        await self.repo.delete_by_user(UUID(user_id))
+        await Messages.delete_by_user(self.s, UUID(user_id))
         answer = "Чат очищен!"
         await self.__answer(user_id, answer)
 
@@ -68,14 +69,13 @@ class Assistant:
         await self.__answer(user_id, answer)
 
     async def __answer(self, user_id: str, text: str):
-        await self.repo.create(UUID(user_id), text, 'ai', False)
+        await Messages.create(self.s, UUID(user_id), text, 'ai', False)
 
     async def call_ai(self, user_id: str, text: str):
         async with maker() as session:
             try:
-                repo = MessageRepo(session)
                 response = await engine.chat(text)
-                await repo.create(UUID(user_id), response, 'ai', False)
+                await Messages.create(session, UUID(user_id), response, 'ai', False)
                 await session.commit()
             except Exception as e:
                 await session.rollback()

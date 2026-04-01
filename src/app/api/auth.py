@@ -3,7 +3,6 @@ from urllib.parse import unquote
 from fastapi import APIRouter, Request, Response, Depends
 
 from src.app.db.engine import get_session
-from src.app.repositories.user import UserRepo
 from src.app.services.auth import AuthService
 
 
@@ -11,8 +10,7 @@ router = APIRouter()
 
 
 async def get_auth_service(session=Depends(get_session, scope='function')) -> AuthService:
-    user_repo = UserRepo(session)
-    return AuthService(user_repo)
+    return AuthService(session)
 
 @router.post('/login')
 async def login(request: Request,

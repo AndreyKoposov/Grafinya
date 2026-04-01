@@ -3,19 +3,13 @@ from fastapi import Depends, Request
 
 from src.app.schemas.process import ProcessCreateData, ProcessEditData, EntityData, ToDeleteData
 from src.app.services.process import ProcessService
-from src.app.repositories.process import ProcessRepo
-from src.app.repositories.entities import EntityRepo
-from src.app.repositories.parameters import ParamRepo
 from src.app.db.engine import get_session
 
 
 router = APIRouter()
 
 async def get_process_service(session=Depends(get_session, scope='function')) -> ProcessService:
-    proc_repo = ProcessRepo(session)
-    entity_repo = EntityRepo(session)
-    param_repo = ParamRepo(session)
-    return ProcessService(proc_repo, entity_repo, param_repo)
+    return ProcessService(session)
 
 @router.get('/')
 async def get_processes(request: Request,

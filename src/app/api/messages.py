@@ -2,7 +2,6 @@ from fastapi.routing import APIRouter
 from fastapi import Depends, Request
 
 from src.app.db.engine import get_session
-from src.app.repositories.messages import MessageRepo
 from src.app.services.assistant import Assistant
 from src.app.schemas.messages import MessageData
 
@@ -10,8 +9,7 @@ from src.app.schemas.messages import MessageData
 router = APIRouter()
 
 async def get_assistant(session=Depends(get_session, scope='function')) -> Assistant:
-    msg_repo = MessageRepo(session)
-    return Assistant(msg_repo)
+    return Assistant(session)
 
 @router.get('/')
 async def fetch(request: Request,
