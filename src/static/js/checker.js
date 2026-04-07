@@ -80,15 +80,19 @@ function getConnectionChecker(fetch_request, timeout) {
 function getMsgsChecker(fetch_request, timeout) {
     let intervalId = null;
     let hasNew = false;
+    let aiThinking = false;
     
     async function checkMsgs() {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
-            hasNew = await fetch_request(controller.signal)
+            [hasNew, aiThinking] = await fetch_request(controller.signal)
             clearTimeout(timeoutId); 
 
             if (hasNew)
+                onNew();
+
+            if (!aiThinking)
                 stop();
             
         } catch (error) {
@@ -118,6 +122,7 @@ function getMsgsChecker(fetch_request, timeout) {
     return {
         start,
         stop,
+        onNew: (callback) => { onNew = callback; },
         onStop: (callback) => { onStop = callback; },
     };
 }

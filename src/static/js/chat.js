@@ -72,8 +72,10 @@ function startChat() {
         showTypingIndicator();
 
         const msgChecker = getMsgsChecker(api_check_msgs, 200);
-        msgChecker.onStop(async () => {
+        msgChecker.onNew(async () => {
             await loadMessages();
+        });
+        msgChecker.onStop(async () => {
             hideTypingIndicator();
         });
         msgChecker.start();

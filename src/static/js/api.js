@@ -55,15 +55,16 @@ async function api_fetch_msgs() {
 
 async function api_check_msgs(signal) {
     has_new = false;
+    ai_thinking = false;
 
     await fetch("api/messages/check", {
         signal: signal
     })
         .then(response => response.json())  
-        .then(data => has_new = data.has_new)
+        .then(data => { has_new = data.has_new; ai_thinking = data.ai_thinking })
         .catch(error => console.error(error));
 
-    return has_new
+    return [has_new, ai_thinking]
 }
 
 async function api_send_msg(text) {

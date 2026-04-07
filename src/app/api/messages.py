@@ -30,11 +30,14 @@ async def check(request: Request,
     user_id = request.cookies.get('grafinya_session')
 
     has_new = False
+    ai_thinking = False
     if user_id:
         has_new = await assistant.has_unread(user_id)
+        ai_thinking = await assistant.ai_thinking(user_id)
 
     return {
-        'has_new': has_new
+        'has_new': has_new,
+        'ai_thinking': ai_thinking
     }
 
 @router.post('/send')
