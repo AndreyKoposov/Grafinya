@@ -15,7 +15,7 @@ async function auth() {
     await fetch("http://127.0.0.1:8000/api/auth/login", {
         method: "POST"
     }).then(response => response.json())
-        .then(data => success = data.success)
+        .then(data => { success = data.success; alert(data.error); })
         .catch(error => console.error(error));
 
     return success

@@ -9,8 +9,26 @@ services:
       - "${DB_PORT}:5432"
     volumes:
       - grafinya_pg:/var/lib/postgresql/data
+    networks:
+      - app_network
+  
+  grafinya:
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+    networks:
+      - app_network
+    build:
+      dockerfile: Dockerfile
 
 volumes:
   grafinya_pg:
     name: 
       grafinya_pg
+
+networks:
+  app_network:
+    driver: bridge

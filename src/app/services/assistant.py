@@ -1,5 +1,4 @@
 from uuid import UUID
-from enum import Enum
 import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,16 +6,12 @@ from src.app.db.engine import maker
 from src.app.ai.engine import engine
 from src.app.models.messages import Messages
 from src.app.models.user import User
+from src.app.utils.state_manager import storage, State
 
-
-class State(Enum):
-    DEFAULT = 0
-    WAIT_TEXT = 1
 
 class Assistant:
     def __init__(self, session: AsyncSession) -> None:
         self.s = session
-        self.state: State = State.DEFAULT
 
     async def fetch(self, user_id: str) -> list:
         msgs = []
@@ -39,9 +34,9 @@ class Assistant:
     async def send(self, user_id: str, text: str) -> bool:
         await Messages.create(self.s, UUID(user_id), text, 'user', True)
 
-        if self.state == State.WAIT_TEXT:
+        if storage.get_state(user_id) == State.WAIT_TEXT:
             asyncio.create_task(self.start_analyze(user_id, text))
-            self.state = State.DEFAULT
+            storage.save_state(user_id, State.DEFAULT)
             return True
 
         if text.startswith('/'):
@@ -82,7 +77,7 @@ class Assistant:
         await self.__answer(user_id, answer)
 
     async def __analyze(self, user_id: str):
-        self.state = State.WAIT_TEXT
+        storage.save_state(user_id, State.WAIT_TEXT)
         answer = "Отправьте мне описание процесса, и я попробую разобраться!"
         await self.__answer(user_id, answer)
 

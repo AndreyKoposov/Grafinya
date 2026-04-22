@@ -9,7 +9,7 @@ from src.app.api.router import router
 app = FastAPI(title='Grafinya')
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://orioks.miet.ru"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

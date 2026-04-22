@@ -16,7 +16,7 @@ async def get_auth_service(session=Depends(get_session, scope='function')) -> Au
 async def login(request: Request,
                 response: Response,
                 auth: AuthService = Depends(get_auth_service)):
-
+    host = request.headers.get("host", "").split(":")[0]
     orioks_identity = request.cookies.get('orioks_identity')
     if orioks_identity is None:
         return {
@@ -32,8 +32,9 @@ async def login(request: Request,
         }
 
     success, user_id = await auth.login_or_register(orioks_id)
+    print(success, user_id)
     if success:
-        response.set_cookie(key='grafinya_session', value=str(user_id))
+        response.set_cookie(key='grafinya_session', value=str(user_id), domain=host)
 
     return {
         'success': success,
